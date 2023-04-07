@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  grafana:
+    build:
+      context: ./docker/grafana
+    volumes:
+      - /var/lib/grafana
+    ports:
+      - "8080:3000"
+    links:
+      - elastic
+    restart: always
+  elastic:
+    build:
+      context: ./docker/elastic
+    environment:
+      - xpack.security.enabled=false
+      - "discovery.type=single-node"
+    volumes:
+      - /usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    restart: always
+  scripts:
+    build:
+      context: ./docker/scripts
+    links:
+      - elastic
